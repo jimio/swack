@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+# swack - the security swiss army knife | @jimio
+# much of this code lifted from docs and examples
+
+require 'base64'
+require 'digest'
+require 'net/http'
+require 'net/https'
+
+# a few usually-useful strings for security folks
+useful_stuff = "
+<script>alert(document.domain);</script>
+<img src='x' onerror='alert(document.domain);'>
+javascript:alert(document.domain)
+
+#{Time.now.utc}
+#{Time.now}
+\n"
+
+if ARGV.length == 0
+	puts useful_stuff
+	abort
+end
+
+target = ARGV[0]
+
+# dump a whole bunch of helpful encoding-type stuff
+puts "Base64 encode: #{Base64.encode64 target}"
+puts "Base64 decode: #{Base64.decode64 target}"
+puts "MD5: #{Digest::MD5.hexdigest target}"
+puts "SHA1: #{Digest::SHA1.hexdigest target}"
+puts "SHA2: #{Digest::SHA2.hexdigest target}"
+
+# if it's a URL, party on
+def fetch(url)
+  uri = URI.parse(url)
+  if !uri.is_a?(URI::HTTP)
+  	return
+  end
+
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = (http.port == 443)
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  header = 
+   {'User-Agent' => "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"}
+
+  request = Net::HTTP::Get.new(uri.request_uri, header)
+  res = http.request(request)
+
+  case res
+  when Net::HTTPSuccess then
+	puts "#{res.code}: #{url}"
+  when Net::HTTPRedirection then
+  	redirect = res['location']
+	puts "#{res.code}: #{url}"
+	fetch redirect
+  else
+	puts "#{res.code}: #{url}"
+  end
+end
+
+fetch target
+
+exit
