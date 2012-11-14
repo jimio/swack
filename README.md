@@ -11,6 +11,7 @@ it turns out that swack is slang for intercourse, so.. just as well). this quick
 command attempts to be a one-stop-shop for all of your daily security needs.
 
 to install without building:
+
     gem install swack
 
 when aliased to 's', you get this super-handy interface:
@@ -22,7 +23,7 @@ syntactically-correct strings that you'll probably use at some point or another.
 when you pass an argument, it tries to do a whole bunch of helpful stuff on it.
 
 TODOs:
--check certificates on URLs (expiration, subject info, etc )
--dump http headers from responses
--format things nicely
--handy-dandy script to build & install & alias
+* check certificates on URLs (expiration, subject info, etc )
+* dump http headers from responses
+* format things nicely
+* handy-dandy script to build & install & alias
