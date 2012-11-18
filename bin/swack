@@ -48,10 +48,8 @@ def fetch(url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = (http.port == 443)
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    header =
-     {'User-Agent' => "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"}
 
-    request = Net::HTTP::Get.new(uri.request_uri, header)
+    request = Net::HTTP::Get.new(uri.request_uri)
     res = http.request(request)
 
     case res
@@ -69,5 +67,4 @@ def fetch(url)
 end
 
 fetch target
-
 exit
